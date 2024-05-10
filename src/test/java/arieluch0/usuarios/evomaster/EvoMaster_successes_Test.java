@@ -1,32 +1,24 @@
-import  org.junit.jupiter.api.AfterAll;
-import  org.junit.jupiter.api.BeforeAll;
-import  org.junit.jupiter.api.BeforeEach;
-import  org.junit.jupiter.api.Test;
-import  org.junit.jupiter.api.Timeout;
-import static org.junit.jupiter.api.Assertions.*;
-import  java.util.Map;
-import  java.util.List;
-import static org.evomaster.client.java.controller.api.EMTestUtils.*;
-import  org.evomaster.client.java.controller.SutHandler;
-import  io.restassured.RestAssured;
+package arieluch0.usuarios.evomaster;
+
+import io.restassured.RestAssured;
+import io.restassured.config.JsonConfig;
+import io.restassured.path.json.config.JsonPathConfig;
+import io.restassured.response.ValidatableResponse;
+import org.evomaster.client.java.controller.SutHandler;
+import org.evomaster.client.java.controller.api.dto.database.operations.InsertionDto;
+import org.evomaster.client.java.controller.api.dto.database.operations.InsertionResultsDto;
+import org.evomaster.client.java.controller.expect.ExpectationHandler;
+import org.junit.jupiter.api.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
-import  io.restassured.response.ValidatableResponse;
-import static org.evomaster.client.java.sql.dsl.SqlDsl.sql;
-import  org.evomaster.client.java.controller.api.dto.database.operations.InsertionResultsDto;
-import  org.evomaster.client.java.controller.api.dto.database.operations.InsertionDto;
-import static org.hamcrest.Matchers.*;
-import  io.restassured.config.JsonConfig;
-import  io.restassured.path.json.config.JsonPathConfig;
 import static io.restassured.config.RedirectConfig.redirectConfig;
-import static org.evomaster.client.java.controller.contentMatchers.NumberMatcher.*;
-import static org.evomaster.client.java.controller.contentMatchers.StringMatcher.*;
-import static org.evomaster.client.java.controller.contentMatchers.SubStringMatcher.*;
 import static org.evomaster.client.java.controller.expect.ExpectationHandler.expectationHandler;
-import  org.evomaster.client.java.controller.expect.ExpectationHandler;
-import  io.restassured.path.json.JsonPath;
-import  java.util.Arrays;
-
-
+import static org.evomaster.client.java.sql.dsl.SqlDsl.sql;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
@@ -44,19 +36,20 @@ import  java.util.Arrays;
  */
 public class EvoMaster_successes_Test {
 
-    
+
     private static final SutHandler controller = new arieluch0.usuarios.evomaster.ControladorEvoMaster();
     private static String baseUrlOfSut;
-    /** [ems] - expectations master switch - is the variable that activates/deactivates expectations individual test cases
-    * by default, expectations are turned off. The variable needs to be set to [true] to enable expectations
-    */
-    private static boolean ems = false;
     /**
-    * sco - supported code oracle - checking that the response status code is among those supported according to the schema
-    */
-    private static boolean sco = false;
-    
-    
+     * [ems] - expectations master switch - is the variable that activates/deactivates expectations individual test cases
+     * by default, expectations are turned off. The variable needs to be set to [true] to enable expectations
+     */
+    private static final boolean ems = false;
+    /**
+     * sco - supported code oracle - checking that the response status code is among those supported according to the schema
+     */
+    private static final boolean sco = false;
+
+
     @BeforeAll
     public static void initClass() {
         controller.setupForGeneratedTest();
@@ -67,47 +60,47 @@ public class EvoMaster_successes_Test {
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.urlEncodingEnabled = false;
         RestAssured.config = RestAssured.config()
-            .jsonConfig(JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE))
-            .redirect(redirectConfig().followRedirects(false));
+                .jsonConfig(JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE))
+                .redirect(redirectConfig().followRedirects(false));
     }
-    
-    
+
+
     @AfterAll
     public static void tearDown() {
         controller.stopSut();
     }
-    
-    
+
+
     @BeforeEach
     public void initTest() {
-        controller.resetDatabase(Arrays.asList("usuario"));
+        controller.resetDatabase(List.of("usuario"));
         controller.resetStateOfSUT();
     }
-    
-    
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_0() throws Exception {
         ExpectationHandler expectationHandler = expectationHandler();
-        
+
         ValidatableResponse res_0 = given().accept("*/*")
                 .get(baseUrlOfSut + "/v3/api-docs")
                 .then()
                 .statusCode(200);
-        
+
         expectationHandler.expect(ems)
-            /*
-             Note: No supported codes appear to be defined. https://swagger.io/docs/specification/describing-responses/.
-             This is somewhat unexpected, so the code below is likely to lead to a failed expectation
-            */
-            .that(sco, Arrays.asList().contains(res_0.extract().statusCode()));
+                /*
+                 Note: No supported codes appear to be defined. https://swagger.io/docs/specification/describing-responses/.
+                 This is somewhat unexpected, so the code below is likely to lead to a failed expectation
+                */
+                .that(sco, List.of().contains(res_0.extract().statusCode()));
     }
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_1() throws Exception {
-        
+
         given().accept("*/*")
                 .header("x-EMextraHeader123", "")
                 .get(baseUrlOfSut + "/usuarios/107")
@@ -115,13 +108,14 @@ public class EvoMaster_successes_Test {
                 .statusCode(200)
                 .assertThat()
                 .body(isEmptyOrNullString());
-        
+
     }
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_2() throws Exception {
-        
+
         given().accept("*/*")
                 .header("x-EMextraHeader123", "")
                 .delete(baseUrlOfSut + "/usuarios/123")
@@ -130,24 +124,25 @@ public class EvoMaster_successes_Test {
                 .assertThat()
                 .contentType("text/plain")
                 .body(containsString("ERROR: No existe ningún usuario con el ID 123."));
-        
+
     }
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_3() throws Exception {
         List<InsertionDto> insertions = sql().insertInto("usuario", 9L)
                 .d("nombre", "\"CJXgA99B\"")
                 .d("apellido", "\"wBQdUd\"")
-            .and().insertInto("usuario", 10L)
+                .and().insertInto("usuario", 10L)
                 .d("nombre", "\"uF5N\"")
                 .d("apellido", "\"aHT4_G7oGKvwUA6L\"")
-            .and().insertInto("usuario", 11L)
+                .and().insertInto("usuario", 11L)
                 .d("nombre", "\"uiBwHQI\"")
                 .d("apellido", "\"\"")
-            .dtos();
+                .dtos();
         InsertionResultsDto insertionsresult = controller.execInsertionsIntoDatabase(insertions);
-        
+
         given().accept("*/*")
                 .header("x-EMextraHeader123", "42")
                 .get(baseUrlOfSut + "/usuarios")
@@ -162,47 +157,49 @@ public class EvoMaster_successes_Test {
                 .body("[1].'apellido'", containsString("aHT4_G7oGKvwUA6L"))
                 .body("[2].'nombre'", containsString("_EM_181_XYZ_"))
                 .body("[2].'apellido'", containsString("_EM_182_XYZ_"))
-                ; // Skipping assertions on the remaining 9 elements. This limit of 3 elements can be increased in the configurations
-        
+        ; // Skipping assertions on the remaining 9 elements. This limit of 3 elements can be increased in the configurations
+
     }
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_4() throws Exception {
-        
+
         given().accept("*/*")
                 .header("x-EMextraHeader123", "")
                 .contentType("application/json")
-                .body(" { " + 
-                    " \"apellido\": \"_EM_10_XYZ_\" " + 
-                    " } ")
+                .body(" { " +
+                        " \"apellido\": \"_EM_10_XYZ_\" " +
+                        " } ")
                 .put(baseUrlOfSut + "/usuarios/168")
                 .then()
                 .statusCode(200)
                 .assertThat()
                 .contentType("text/plain")
                 .body(containsString("ERROR: No existe ningún usuario con el ID 168."));
-        
+
     }
-    
-    
-    @Test @Timeout(60)
+
+
+    @Test
+    @Timeout(60)
     public void test_5() throws Exception {
         List<InsertionDto> insertions = sql().insertInto("usuario", 57L)
                 .d("nombre", "\"_EM_181_XYZ_\"")
                 .d("apellido", "\"_EM_182_XYZ_\"")
-            .and().insertInto("usuario", 58L)
+                .and().insertInto("usuario", 58L)
                 .d("nombre", "\"_EM_183_XYZ_\"")
                 .d("apellido", "\"CT\"")
-            .and().insertInto("usuario", 59L)
+                .and().insertInto("usuario", 59L)
                 .d("nombre", "\"mQ7Lh\"")
                 .d("apellido", "\"ur\"")
-            .and().insertInto("usuario", 35L)
+                .and().insertInto("usuario", 35L)
                 .d("nombre", "\"7\"")
                 .d("apellido", "\"_EM_135_XYZ_\"")
-            .dtos();
+                .dtos();
         InsertionResultsDto insertionsresult = controller.execInsertionsIntoDatabase(insertions);
-        
+
         given().accept("*/*")
                 .header("x-EMextraHeader123", "_EM_136_XYZ_")
                 .delete(baseUrlOfSut + "/usuarios/3")
@@ -211,7 +208,7 @@ public class EvoMaster_successes_Test {
                 .assertThat()
                 .contentType("text/plain")
                 .body(containsString("OK: El usuario \"uiBwHQI \" fue borrado exitosamente."));
-        
+
     }
 
 

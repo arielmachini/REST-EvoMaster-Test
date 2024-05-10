@@ -1,32 +1,25 @@
-import  org.junit.jupiter.api.AfterAll;
-import  org.junit.jupiter.api.BeforeAll;
-import  org.junit.jupiter.api.BeforeEach;
-import  org.junit.jupiter.api.Test;
-import  org.junit.jupiter.api.Timeout;
-import static org.junit.jupiter.api.Assertions.*;
-import  java.util.Map;
-import  java.util.List;
-import static org.evomaster.client.java.controller.api.EMTestUtils.*;
-import  org.evomaster.client.java.controller.SutHandler;
-import  io.restassured.RestAssured;
+package arieluch0.usuarios.evomaster;
+
+import io.restassured.RestAssured;
+import io.restassured.config.JsonConfig;
+import io.restassured.path.json.config.JsonPathConfig;
+import io.restassured.response.ValidatableResponse;
+import org.evomaster.client.java.controller.SutHandler;
+import org.evomaster.client.java.controller.api.dto.database.operations.InsertionDto;
+import org.evomaster.client.java.controller.api.dto.database.operations.InsertionResultsDto;
+import org.evomaster.client.java.controller.expect.ExpectationHandler;
+import org.junit.jupiter.api.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
-import  io.restassured.response.ValidatableResponse;
-import static org.evomaster.client.java.sql.dsl.SqlDsl.sql;
-import  org.evomaster.client.java.controller.api.dto.database.operations.InsertionResultsDto;
-import  org.evomaster.client.java.controller.api.dto.database.operations.InsertionDto;
-import static org.hamcrest.Matchers.*;
-import  io.restassured.config.JsonConfig;
-import  io.restassured.path.json.config.JsonPathConfig;
 import static io.restassured.config.RedirectConfig.redirectConfig;
-import static org.evomaster.client.java.controller.contentMatchers.NumberMatcher.*;
-import static org.evomaster.client.java.controller.contentMatchers.StringMatcher.*;
-import static org.evomaster.client.java.controller.contentMatchers.SubStringMatcher.*;
+import static org.evomaster.client.java.controller.contentMatchers.NumberMatcher.numberMatches;
 import static org.evomaster.client.java.controller.expect.ExpectationHandler.expectationHandler;
-import  org.evomaster.client.java.controller.expect.ExpectationHandler;
-import  io.restassured.path.json.JsonPath;
-import  java.util.Arrays;
-
-
+import static org.evomaster.client.java.sql.dsl.SqlDsl.sql;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
@@ -44,19 +37,20 @@ import  java.util.Arrays;
  */
 public class EvoMaster_fault_representatives_Test {
 
-    
+
     private static final SutHandler controller = new arieluch0.usuarios.evomaster.ControladorEvoMaster();
     private static String baseUrlOfSut;
-    /** [ems] - expectations master switch - is the variable that activates/deactivates expectations individual test cases
-    * by default, expectations are turned off. The variable needs to be set to [true] to enable expectations
-    */
-    private static boolean ems = false;
     /**
-    * sco - supported code oracle - checking that the response status code is among those supported according to the schema
-    */
-    private static boolean sco = false;
-    
-    
+     * [ems] - expectations master switch - is the variable that activates/deactivates expectations individual test cases
+     * by default, expectations are turned off. The variable needs to be set to [true] to enable expectations
+     */
+    private static final boolean ems = false;
+    /**
+     * sco - supported code oracle - checking that the response status code is among those supported according to the schema
+     */
+    private static final boolean sco = false;
+
+
     @BeforeAll
     public static void initClass() {
         controller.setupForGeneratedTest();
@@ -67,52 +61,51 @@ public class EvoMaster_fault_representatives_Test {
         RestAssured.useRelaxedHTTPSValidation();
         RestAssured.urlEncodingEnabled = false;
         RestAssured.config = RestAssured.config()
-            .jsonConfig(JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE))
-            .redirect(redirectConfig().followRedirects(false));
+                .jsonConfig(JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE))
+                .redirect(redirectConfig().followRedirects(false));
     }
-    
-    
+
+
     @AfterAll
     public static void tearDown() {
         controller.stopSut();
     }
-    
-    
+
+
     @BeforeEach
     public void initTest() {
-        controller.resetDatabase(Arrays.asList("usuario"));
+        controller.resetDatabase(List.of("usuario"));
         controller.resetStateOfSUT();
     }
-    
-    
-    
-    
+
+
     /**
-    * [test_0_with500] is a part of 1 or more clusters, as defined by the selected clustering options. 
-    * ErrorText_0
-    * LastLine_0
-    */
-    @Test @Timeout(60)
+     * [test_0_with500] is a part of 1 or more clusters, as defined by the selected clustering options.
+     * ErrorText_0
+     * LastLine_0
+     */
+    @Test
+    @Timeout(60)
     public void test_0_with500() throws Exception {
         List<InsertionDto> insertions = sql().insertInto("usuario", 9L)
                 .d("nombre", "\"CJXgA99B\"")
                 .d("apellido", "\"wBQdUd\"")
-            .and().insertInto("usuario", 10L)
+                .and().insertInto("usuario", 10L)
                 .d("nombre", "\"uF5N\"")
                 .d("apellido", "\"aHT4_G7oGKvwUA6L\"")
-            .and().insertInto("usuario", 11L)
+                .and().insertInto("usuario", 11L)
                 .d("nombre", "\"uiBwHQI\"")
                 .d("apellido", "\"\"")
-            .dtos();
+                .dtos();
         InsertionResultsDto insertionsresult = controller.execInsertionsIntoDatabase(insertions);
         ExpectationHandler expectationHandler = expectationHandler();
-        
+
         ValidatableResponse res_0 = given().accept("*/*")
                 .header("x-EMextraHeader123", "")
                 .contentType("application/json")
-                .body(" { " + 
-                    " \"nombre\": \"GnJix4agXYU\" " + 
-                    " } ")
+                .body(" { " +
+                        " \"nombre\": \"GnJix4agXYU\" " +
+                        " } ")
                 .post(baseUrlOfSut + "/usuarios")
                 .then()
                 .statusCode(500) // arieluch0/usuarios/controlador/ControladorUsuarios_27_crearUsuario
@@ -121,28 +114,29 @@ public class EvoMaster_fault_representatives_Test {
                 .body("'status'", numberMatches(500.0))
                 .body("'error'", containsString("Internal Server Error"))
                 .body("'path'", containsString("/usuarios"));
-        
+
         expectationHandler.expect(ems)
-            .that(sco, Arrays.asList(200).contains(res_0.extract().statusCode()));
+                .that(sco, List.of(200).contains(res_0.extract().statusCode()));
     }
-    
-    
+
+
     /**
-    * [test_1_with500] is a part of 1 or more clusters, as defined by the selected clustering options. 
-    * ErrorText_0
-    * LastLine_0
-    */
-    @Test @Timeout(60)
+     * [test_1_with500] is a part of 1 or more clusters, as defined by the selected clustering options.
+     * ErrorText_0
+     * LastLine_0
+     */
+    @Test
+    @Timeout(60)
     public void test_1_with500() throws Exception {
         ExpectationHandler expectationHandler = expectationHandler();
-        
+
         ValidatableResponse res_0 = given().accept("*/*")
                 .header("x-EMextraHeader123", "42")
                 .contentType("application/json")
-                .body(" { " + 
-                    " \"id\": 835, " + 
-                    " \"apellido\": \"_EM_7_XYZ_\" " + 
-                    " } ")
+                .body(" { " +
+                        " \"id\": 835, " +
+                        " \"apellido\": \"_EM_7_XYZ_\" " +
+                        " } ")
                 .post(baseUrlOfSut + "/usuarios")
                 .then()
                 .statusCode(500) // arieluch0/usuarios/controlador/ControladorUsuarios_27_crearUsuario
@@ -151,9 +145,9 @@ public class EvoMaster_fault_representatives_Test {
                 .body("'status'", numberMatches(500.0))
                 .body("'error'", containsString("Internal Server Error"))
                 .body("'path'", containsString("/usuarios"));
-        
+
         expectationHandler.expect(ems)
-            .that(sco, Arrays.asList(200).contains(res_0.extract().statusCode()));
+                .that(sco, List.of(200).contains(res_0.extract().statusCode()));
     }
 
 
